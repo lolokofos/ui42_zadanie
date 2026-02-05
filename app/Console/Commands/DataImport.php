@@ -13,8 +13,8 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class DataImport extends Command
 {
-    protected $signature = 'data:import {--url= : URL okresu alebo zoznamu obci}';
-    protected $description = 'Import obci z e-obce.sk';
+    protected $signature = 'data:import {--url= : District or list URL}';
+    protected $description = 'Import cities from e-obce.sk';
 
     public function handle(): int
     {
@@ -38,7 +38,7 @@ class DataImport extends Command
             try {
                 $krajHtml = $this->fetchHtml($client, $url);
             } catch (\Throwable $e) {
-                $this->error('Nepodarilo sa stiahnut kraj: ' . $e->getMessage());
+                $this->error('Failed to download region page: ' . $e->getMessage());
                 return self::FAILURE;
             }
 
@@ -50,10 +50,10 @@ class DataImport extends Command
                     && preg_match('#^https://www\.e-obce\.sk/okres/[a-z0-9\-_]+\.html$#i', $link);
             }));
 
-            $this->info('Najdene okresy: ' . count($districtUrls));
+            $this->info('Districts found: ' . count($districtUrls));
 
             if ($districtUrls === []) {
-                $this->error('Nenasiel som ziadne pouzitelne okres URL na stranke.');
+                $this->error('No usable district URLs found on the page.');
                 return self::FAILURE;
             }
         } else {
@@ -69,7 +69,7 @@ class DataImport extends Command
             try {
                 $html = $this->fetchHtml($client, $districtUrl);
             } catch (\Throwable $e) {
-                $this->error('Okres zlyhal: ' . $districtName . ' | ' . $e->getMessage());
+                $this->error('District failed: ' . $districtName . ' | ' . $e->getMessage());
                 continue;
             }
 
@@ -91,10 +91,10 @@ class DataImport extends Command
                 );
             }));
 
-            $this->info('Okres ' . $districtName . ' | obce: ' . count($cityLinks));
+            $this->info('District ' . $districtName . ' | cities: ' . count($cityLinks));
 
             if ($cityLinks === []) {
-                $this->error('Okres bez obci: ' . $districtName);
+                $this->error('District without cities: ' . $districtName);
                 continue;
             }
 
@@ -125,9 +125,9 @@ class DataImport extends Command
                         ]
                     );
 
-                    $this->info('Ulozene do DB: ' . ($data['name'] ?? 'Neznama obec'));
+                    $this->info('Saved to DB: ' . ($data['name'] ?? 'Unknown city'));
                 } catch (\Throwable $e) {
-                    $this->error('Obec zlyhala: ' . $detailUrl . ' | ' . $e->getMessage());
+                    $this->error('City failed: ' . $detailUrl . ' | ' . $e->getMessage());
                     continue;
                 }
             }

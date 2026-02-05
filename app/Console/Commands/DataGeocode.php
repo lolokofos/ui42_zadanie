@@ -44,7 +44,7 @@ class DataGeocode extends Command
                 $status = $geocoder->lastStatus() ?? 'UNKNOWN';
                 $error = $geocoder->lastErrorMessage();
                 $suffix = $error !== null ? (' | ' . $error) : '';
-                $this->warn('Geocode zlyhalo: ' . $city->id . ' | ' . $city->name . ' | ' . $status . $suffix);
+                $this->warn('Geocode failed: ' . $city->id . ' | ' . $city->name . ' | ' . $status . $suffix);
                 $failed++;
                 usleep(200000);
                 continue;
