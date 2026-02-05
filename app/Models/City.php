@@ -9,6 +9,7 @@ class City extends Model
     protected $fillable = [
         'name',
         'mayor_name',
+        'mayor_title',
         'address',
         'phone',
         'fax',

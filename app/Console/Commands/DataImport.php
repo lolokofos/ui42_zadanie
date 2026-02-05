@@ -115,6 +115,7 @@ class DataImport extends Command
                         [
                             'name' => $data['name'],
                             'mayor_name' => $data['mayor_name'],
+                            'mayor_title' => $data['mayor_title'],
                             'address' => $data['address'],
                             'phone' => $data['phone'],
                             'fax' => $data['fax'],

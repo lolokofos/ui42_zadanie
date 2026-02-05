@@ -13,7 +13,17 @@ class CityDetailParser
         $phone = $this->valueAfterLabel($crawler, 'Tel:');
         $email = $this->valueAfterLabel($crawler, 'Email:');
         $website = $this->valueAfterLabel($crawler, 'Web:');
+        $mayorTitle = null;
         $mayor = $this->valueAfterLabel($crawler, 'Starosta:');
+        if ($mayor !== null) {
+            $mayorTitle = 'starosta';
+        } else {
+            $mayor = $this->valueAfterLabel($crawler, 'Primátor:')
+                ?? $this->valueAfterLabel($crawler, 'Primator:');
+            if ($mayor !== null) {
+                $mayorTitle = 'primator';
+            }
+        }
         $fax = $this->valueAfterLabel($crawler, 'Fax:');
 
         $address = $this->parseAddress($crawler);
@@ -22,6 +32,7 @@ class CityDetailParser
         return [
             'name' => $name,
             'mayor_name' => $mayor,
+            'mayor_title' => $mayorTitle,
             'address' => $address,
             'phone' => $phone,
             'fax' => $fax,
